@@ -64,17 +64,17 @@ export const Gallery = (props) => {
             });
     };
 
-    let toggleModal = (e) => {
-        if (e.target.getAttribute("data-resize")) {
+    let toggleModal = ({ target }) => {
+        if (target.getAttribute("data-resize")) {
             setModalSize(!modalSize)
         }
-        if (e.target.getAttribute("data-img") && e.target.getAttribute("data-index")) {
-            let indexImg = e.target.getAttribute("data-index");
+        if (target.getAttribute("data-img") && target.getAttribute("data-index")) {
+            let indexImg = target.getAttribute("data-index");
             setModalSrc(img[indexImg].largeImageURL)
             setIsOpen(!isOpen);
-        } else if (e.target.getAttribute("data-img")) {
+        } else if (target.getAttribute("data-img")) {
             setIsOpen(!isOpen);
-        } else if (e.target.getAttribute("data-close")) {
+        } else if (target.getAttribute("data-close")) {
             setIsOpen(false);
             setModalSize(false);
         }

@@ -79,7 +79,7 @@ export const StyledModal = styled.div`
 
 export const StyledModalBlockImg = styled.div`
 	position: relative;
-
+	background: white;
 	max-width: ${({ modalSize }) => (modalSize ? "100%" : "1200px")};
 	max-height: ${({ modalSize }) => (modalSize ? "100%" : "1200px")};
 	width: ${({ modalSize }) => (modalSize ? "100%" : "80%")};

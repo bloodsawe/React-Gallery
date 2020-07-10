@@ -4,3 +4,21 @@
 	width: 60vw;
 	margin: 0 auto;
 }
+
+.header-wrapper {
+	width: 60vw;
+	margin: 0 auto;
+	padding: 20px 10px;
+}
+
+.link {
+	color: white;
+	text-decoration: none;
+}
+
+.link + .link {
+	margin-left: 25px;
+}
+.link:hover {
+	color: rgb(198, 203, 206);
+}

@@ -1,19 +1,16 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
+import { Modal } from "./Modal/Modal";
 import {
     StyledWrapImg,
     StyledImg,
     StyledButton,
     StyledModalButton,
-    StyledModal,
     StyledInput,
     StyledInputWrap,
     StyledInputForm,
     StyledCounter,
     StyledWrap,
     StyledTitle,
-    StyledModalBlockImg,
-    StyledModalImg,
-    StyledModalResize
 } from "./styled";
 import { ReactComponent as DualBall } from '../../assets/DualBall.svg';
 
@@ -25,7 +22,7 @@ export const Gallery = (props) => {
     const [img, setImg] = useState([]);
     const [counterPage, setCounterPage] = useState(2);
     const [isOpen, setIsOpen] = useState(false);
-    const [waitFetch, setWaitFetch] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [counterFind, setCounterFind] = useState(0);
     const [modalSrc, setModalSrc] = useState("");
     const [modalSize, setModalSize] = useState(false);
@@ -41,7 +38,7 @@ export const Gallery = (props) => {
 
     let onSubmitHandler = (event) => {
         event.preventDefault();
-        setWaitFetch(true);
+        setIsLoading(true);
         fetch(
             `${BASE_URL}?key=${API_KEY}&q=${value}`
         )
@@ -50,8 +47,9 @@ export const Gallery = (props) => {
                 setImg(img.hits);
                 setCounterFind(counterFind + 1);
             })
-            .then(() => setWaitFetch(false))
+            .then(() => setIsLoading(false))
     };
+
 
     let loadingImg = () => {
         fetch(
@@ -65,6 +63,8 @@ export const Gallery = (props) => {
     };
 
     let toggleModal = ({ target }) => {
+        console.log(target);
+
         if (target.getAttribute("data-resize")) {
             setModalSize(!modalSize)
         }
@@ -80,16 +80,16 @@ export const Gallery = (props) => {
         }
     };
 
-    let renderImg = () => {
+    let renderGallery = () => {
         if (img.length === 0 && counterFind === 0) {
             return <StyledTitle>Press Enter for Search Img</StyledTitle>
         } else if (img.length === 0) {
             return <StyledTitle>Sorry, nothing was found for your request.</StyledTitle>
         } else {
-            return img.map((e, i) => (
+            return img.map(({ largeImageURL }, i) => (
                 <StyledWrapImg key={i} >
-                    <StyledModalButton data-index={i} data-img >&times;</StyledModalButton>
-                    <StyledImg src={e.largeImageURL} />
+                    <StyledModalButton >&times;</StyledModalButton>
+                    <StyledImg data-index={i} data-img src={largeImageURL} />
                 </StyledWrapImg>
             ))
         }
@@ -106,15 +106,9 @@ export const Gallery = (props) => {
                     <StyledCounter>{img.length}</StyledCounter>
                 </StyledInputWrap>
 
-                {waitFetch ? <DualBall /> : renderImg()}
+                {isLoading ? <DualBall /> : renderGallery()}
 
-                {isOpen ? <StyledModal data-close>
-                    <StyledModalBlockImg modalSize={modalSize} >
-                        <StyledModalButton data-img  >&times;</StyledModalButton>
-                        <StyledModalResize data-resize >&times;</StyledModalResize>
-                        <StyledModalImg src={modalSrc}></StyledModalImg>
-                    </StyledModalBlockImg>
-                </StyledModal> : null}
+                {isOpen ? <Modal modalSize={modalSize} modalSrc={modalSrc} /> : null}
             </StyledWrap>
             {img.length === 0 ? null : (
                 <StyledButton onClick={loadingImg}>search</StyledButton>

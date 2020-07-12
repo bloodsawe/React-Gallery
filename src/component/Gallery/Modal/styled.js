@@ -18,8 +18,8 @@ export const StyledModalBlockImg = styled.div`
 	background: white;
 	max-width: ${({ modalSize }) => (modalSize ? "100%" : "1200px")};
 	max-height: ${({ modalSize }) => (modalSize ? "100%" : "1200px")};
-	width: ${({ modalSize }) => (modalSize ? "100%" : "80%")};
-	height: ${({ modalSize }) => (modalSize ? "100%" : "80%")};
+	width: ${({ modalSize }) => (modalSize ? "100%" : "70%")};
+	height: ${({ modalSize }) => (modalSize ? "100%" : "60%")};
 	transition: all 1s;
 `;
 export const StyledModalImg = styled.img`
@@ -38,4 +38,19 @@ export const StyledModalResize = styled.div`
 	width: 30px;
 	height: 30px;
 	background: red;
+`;
+
+export const StyledWrapImgAvatar = styled.div`
+	display: block;
+	width: 110px;
+	height: 110px;
+	margin: 0 auto;
+	border-radius: 50%;
+`;
+export const StyledImgAvatar = styled.img`
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
 `;

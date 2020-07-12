@@ -1,18 +1,13 @@
-import React, { Fragment, useState, useEffect, useRef } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Modal } from "./Modal/Modal";
 import {
-    StyledWrapImg,
-    StyledImg,
     StyledButton,
-    StyledModalButton,
-    StyledInput,
-    StyledInputWrap,
-    StyledInputForm,
-    StyledCounter,
     StyledWrap,
     StyledTitle,
 } from "./styled";
 import { ReactComponent as DualBall } from '../../assets/DualBall.svg';
+import { Img } from "./Img/Img";
+import { InputForm } from "./InputForm/InputForm";
 
 const BASE_URL = "https://pixabay.com/api/";
 const API_KEY = "17361730-7007e1a4444906fa7c4133184";
@@ -26,11 +21,8 @@ export const Gallery = (props) => {
     const [counterFind, setCounterFind] = useState(0);
     const [modalSrc, setModalSrc] = useState("");
     const [modalSize, setModalSize] = useState(false);
-    const inputRef = useRef(null);
-
-    useEffect(() => {
-        inputRef.current.focus();
-    }, [])
+    const [modalIndex, setModalIndex] = useState(0);
+    const [storage, setStorage] = useState([] || JSON.parse(localStorage.favorite));
 
     let onChangeHandler = ({ target: { value } }) => {
         setValue(value);
@@ -63,14 +55,19 @@ export const Gallery = (props) => {
     };
 
     let toggleModal = ({ target }) => {
-        console.log(target);
-
         if (target.getAttribute("data-resize")) {
             setModalSize(!modalSize)
+        }
+        if (target.getAttribute("data-modal-index")) {
+            let i = target.getAttribute("data-modal-index");
+            setStorage([...storage, img[i]]);
+
+            localStorage.favorite = JSON.stringify(storage);
         }
         if (target.getAttribute("data-img") && target.getAttribute("data-index")) {
             let indexImg = target.getAttribute("data-index");
             setModalSrc(img[indexImg].largeImageURL)
+            setModalIndex(indexImg)
             setIsOpen(!isOpen);
         } else if (target.getAttribute("data-img")) {
             setIsOpen(!isOpen);
@@ -87,28 +84,19 @@ export const Gallery = (props) => {
             return <StyledTitle>Sorry, nothing was found for your request.</StyledTitle>
         } else {
             return img.map(({ largeImageURL }, i) => (
-                <StyledWrapImg key={i} >
-                    <StyledModalButton >&times;</StyledModalButton>
-                    <StyledImg data-index={i} data-img src={largeImageURL} />
-                </StyledWrapImg>
+                <Img key={i} index={i} largeImageURL={largeImageURL} />
             ))
         }
     }
 
     return (
         <Fragment>
-            <StyledWrap onClick={toggleModal}>
-                <StyledInputWrap >
-                    <StyledInputForm onSubmit={onSubmitHandler}>
-                        <StyledInput ref={inputRef} onChange={onChangeHandler} value={value} />
-                    </StyledInputForm>
-
-                    <StyledCounter>{img.length}</StyledCounter>
-                </StyledInputWrap>
+            <StyledWrap onClick={toggleModal} >
+                <InputForm onChangeHandler={onChangeHandler} value={value} onSubmitHandler={onSubmitHandler} img={img} />
 
                 {isLoading ? <DualBall /> : renderGallery()}
 
-                {isOpen ? <Modal modalSize={modalSize} modalSrc={modalSrc} /> : null}
+                {isOpen ? <Modal modalIndex={modalIndex} modalSize={modalSize} modalSrc={modalSrc} /> : null}
             </StyledWrap>
             {img.length === 0 ? null : (
                 <StyledButton onClick={loadingImg}>search</StyledButton>
